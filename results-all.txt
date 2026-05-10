@@ -1,8 +1,6 @@
 ========== Main Effects Model ==========
-Linear mixed model fit by REML. t-tests use Satterthwaite's method [lmerModLmerTest
-]
-Formula: rd ~ familiarity + duration_factor + appeal + stimuli_condition +  
-    (1 | participant) + (1 | face)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: rd ~ familiarity + duration_factor + appeal + stimuli_condition +      (1 | participant) + (1 | face)
    Data: full_data_all
 
 REML criterion at convergence: 93600
@@ -39,10 +37,8 @@ stml_cndtUK -0.255  0.150 -0.003  0.104  0.531
 
 
 ========== Interaction Model ==========
-Linear mixed model fit by REML. t-tests use Satterthwaite's method [lmerModLmerTest
-]
-Formula: rd ~ familiarity * duration_factor + appeal + stimuli_condition +  
-    (1 | participant) + (1 | face)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: rd ~ familiarity * duration_factor + appeal + stimuli_condition +      (1 | participant) + (1 | face)
    Data: full_data_all
 
 REML criterion at convergence: 93599.6
@@ -59,22 +55,14 @@ Random effects:
 Number of obs: 6294, groups:  participant, 107; face, 60
 
 Fixed effects:
-                                  Estimate Std. Error         df t value Pr(>|t|)
-(Intercept)                      933.30203   33.40412  167.10961  27.940   <2e-16
-familiarity                       -0.29556    0.21430 5961.53882  -1.379    0.168
-duration_factorlong              547.08423   14.23974 6186.08612  38.420   <2e-16
-appeal                             0.05769    0.23232  864.35794   0.248    0.804
-stimuli_conditionNeutral          -5.20432   13.67238   79.71546  -0.381    0.704
-stimuli_conditionUK              -19.05901   12.74635   61.39438  -1.495    0.140
-familiarity:duration_factorlong    0.30308    0.27521 6183.13918   1.101    0.271
-                                   
-(Intercept)                     ***
-familiarity                        
-duration_factorlong             ***
-appeal                             
-stimuli_conditionNeutral           
-stimuli_conditionUK                
-familiarity:duration_factorlong    
+                                  Estimate Std. Error         df t value Pr(>|t|)    
+(Intercept)                      933.30203   33.40412  167.10961  27.940   <2e-16 ***
+familiarity                       -0.29556    0.21430 5961.53882  -1.379    0.168    
+duration_factorlong              547.08423   14.23974 6186.08612  38.420   <2e-16 ***
+appeal                             0.05769    0.23232  864.35794   0.248    0.804    
+stimuli_conditionNeutral          -5.20432   13.67238   79.71546  -0.381    0.704    
+stimuli_conditionUK              -19.05901   12.74635   61.39438  -1.495    0.140    
+familiarity:duration_factorlong    0.30308    0.27521 6183.13918   1.101    0.271    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
@@ -89,10 +77,8 @@ fmlrty:drt_  0.153 -0.651 -0.702 -0.006 -0.005 -0.009
 
 
 ========== Three-Way Interaction Model (familiarity × duration × stimuli_condition) ==========
-Linear mixed model fit by REML. t-tests use Satterthwaite's method [lmerModLmerTest
-]
-Formula: rd ~ familiarity * duration_factor * stimuli_condition + appeal +  
-    (1 | participant) + (1 | face)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: rd ~ familiarity * duration_factor * stimuli_condition + appeal +      (1 | participant) + (1 | face)
    Data: full_data_all
 
 REML criterion at convergence: 93572.1
@@ -109,57 +95,27 @@ Random effects:
 Number of obs: 6294, groups:  participant, 107; face, 60
 
 Fixed effects:
-                                                           Estimate Std. Error
-(Intercept)                                               957.24435   37.11208
-familiarity                                                -0.75889    0.33815
-duration_factorlong                                       512.96957   28.81402
-stimuli_conditionNeutral                                  -45.55473   26.83312
-stimuli_conditionUK                                       -47.71431   28.30681
-appeal                                                      0.04645    0.23242
-familiarity:duration_factorlong                             0.97763    0.44191
-familiarity:stimuli_conditionNeutral                        1.40585    0.61642
-familiarity:stimuli_conditionUK                             0.57053    0.50212
-duration_factorlong:stimuli_conditionNeutral               64.11966   36.29135
-duration_factorlong:stimuli_conditionUK                    35.60083   38.35163
-familiarity:duration_factorlong:stimuli_conditionNeutral   -2.34253    0.80150
-familiarity:duration_factorlong:stimuli_conditionUK        -0.65416    0.65865
-                                                                 df t value
-(Intercept)                                               251.83702  25.793
-familiarity                                              6193.43512  -2.244
-duration_factorlong                                      6179.68489  17.803
-stimuli_conditionNeutral                                  963.29172  -1.698
-stimuli_conditionUK                                      1102.06652  -1.686
-appeal                                                    866.11515   0.200
-familiarity:duration_factorlong                          6179.26423   2.212
-familiarity:stimuli_conditionNeutral                     6213.44118   2.281
-familiarity:stimuli_conditionUK                          6028.50542   1.136
-duration_factorlong:stimuli_conditionNeutral             6179.73935   1.767
-duration_factorlong:stimuli_conditionUK                  6181.17441   0.928
-familiarity:duration_factorlong:stimuli_conditionNeutral 6179.48917  -2.923
-familiarity:duration_factorlong:stimuli_conditionUK      6178.84125  -0.993
-                                                         Pr(>|t|)    
-(Intercept)                                               < 2e-16 ***
-familiarity                                               0.02485 *  
-duration_factorlong                                       < 2e-16 ***
-stimuli_conditionNeutral                                  0.08989 .  
-stimuli_conditionUK                                       0.09215 .  
-appeal                                                    0.84164    
-familiarity:duration_factorlong                           0.02698 *  
-familiarity:stimuli_conditionNeutral                      0.02260 *  
-familiarity:stimuli_conditionUK                           0.25591    
-duration_factorlong:stimuli_conditionNeutral              0.07731 .  
-duration_factorlong:stimuli_conditionUK                   0.35330    
-familiarity:duration_factorlong:stimuli_conditionNeutral  0.00348 ** 
-familiarity:duration_factorlong:stimuli_conditionUK       0.32066    
+                                                           Estimate Std. Error         df t value Pr(>|t|)    
+(Intercept)                                               957.24435   37.11208  251.83702  25.793  < 2e-16 ***
+familiarity                                                -0.75889    0.33815 6193.43512  -2.244  0.02485 *  
+duration_factorlong                                       512.96957   28.81402 6179.68489  17.803  < 2e-16 ***
+stimuli_conditionNeutral                                  -45.55473   26.83312  963.29172  -1.698  0.08989 .  
+stimuli_conditionUK                                       -47.71431   28.30681 1102.06652  -1.686  0.09215 .  
+appeal                                                      0.04645    0.23242  866.11515   0.200  0.84164    
+familiarity:duration_factorlong                             0.97763    0.44191 6179.26423   2.212  0.02698 *  
+familiarity:stimuli_conditionNeutral                        1.40585    0.61642 6213.44118   2.281  0.02260 *  
+familiarity:stimuli_conditionUK                             0.57053    0.50212 6028.50542   1.136  0.25591    
+duration_factorlong:stimuli_conditionNeutral               64.11966   36.29135 6179.73935   1.767  0.07731 .  
+duration_factorlong:stimuli_conditionUK                    35.60083   38.35163 6181.17441   0.928  0.35330    
+familiarity:duration_factorlong:stimuli_conditionNeutral   -2.34253    0.80150 6179.48917  -2.923  0.00348 ** 
+familiarity:duration_factorlong:stimuli_conditionUK        -0.65416    0.65865 6178.84125  -0.993  0.32066    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 
 ========== Familiarity Categorical Model ==========
-Linear mixed model fit by REML. t-tests use Satterthwaite's method [lmerModLmerTest
-]
-Formula: rd ~ familiarity_cat * duration_factor + appeal + stimuli_condition +  
-    (1 | participant) + (1 | face)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: rd ~ familiarity_cat * duration_factor + appeal + stimuli_condition +      (1 | participant) + (1 | face)
    Data: full_data_all
 
 REML criterion at convergence: 93555.3
@@ -176,26 +132,16 @@ Random effects:
 Number of obs: 6294, groups:  participant, 107; face, 60
 
 Fixed effects:
-                                            Estimate Std. Error         df t value
-(Intercept)                                924.81810   33.05444  159.11321  27.979
-familiarity_catmedium                       49.70438   22.49017 6211.28711   2.210
-familiarity_cathigh                        -31.15119   18.36011 6002.36046  -1.697
-duration_factorlong                        556.24668   13.05128 6185.05256  42.620
-appeal                                       0.01263    0.23143  872.00974   0.055
-stimuli_conditionNeutral                    -4.03981   13.51073   76.95074  -0.299
-stimuli_conditionUK                        -19.14764   12.68151   60.92001  -1.510
-familiarity_catmedium:duration_factorlong  -66.06803   29.82273 6184.77589  -2.215
-familiarity_cathigh:duration_factorlong     43.88621   24.00344 6181.16207   1.828
-                                          Pr(>|t|)    
-(Intercept)                                 <2e-16 ***
-familiarity_catmedium                       0.0271 *  
-familiarity_cathigh                         0.0898 .  
-duration_factorlong                         <2e-16 ***
-appeal                                      0.9565    
-stimuli_conditionNeutral                    0.7657    
-stimuli_conditionUK                         0.1362    
-familiarity_catmedium:duration_factorlong   0.0268 *  
-familiarity_cathigh:duration_factorlong     0.0675 .  
+                                            Estimate Std. Error         df t value Pr(>|t|)    
+(Intercept)                                924.81810   33.05444  159.11321  27.979   <2e-16 ***
+familiarity_catmedium                       49.70438   22.49017 6211.28711   2.210   0.0271 *  
+familiarity_cathigh                        -31.15119   18.36011 6002.36046  -1.697   0.0898 .  
+duration_factorlong                        556.24668   13.05128 6185.05256  42.620   <2e-16 ***
+appeal                                       0.01263    0.23143  872.00974   0.055   0.9565    
+stimuli_conditionNeutral                    -4.03981   13.51073   76.95074  -0.299   0.7657    
+stimuli_conditionUK                        -19.14764   12.68151   60.92001  -1.510   0.1362    
+familiarity_catmedium:duration_factorlong  -66.06803   29.82273 6184.77589  -2.215   0.0268 *  
+familiarity_cathigh:duration_factorlong     43.88621   24.00344 6181.16207   1.828   0.0675 .  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
@@ -236,3 +182,44 @@ group    2  5.3429 0.004825 **
       3152                    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+========== Precision Model (cv_rd ~ familiarity × duration × participant_origin) ==========
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: cv_rd ~ mean_familiarity * duration_factor * participant_origin +      (1 | participant)
+   Data: precision_data
+
+REML criterion at convergence: -71.3
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.3543 -0.3925 -0.1548  0.2292  3.7660 
+
+Random effects:
+ Groups      Name        Variance Std.Dev.
+ participant (Intercept) 0.02259  0.1503  
+ Residual                0.01658  0.1288  
+Number of obs: 214, groups:  participant, 107
+
+Fixed effects:
+                                                            Estimate Std. Error         df t value Pr(>|t|)    
+(Intercept)                                                3.599e-01  6.792e-02  2.041e+02   5.299    3e-07 ***
+mean_familiarity                                           8.444e-04  1.614e-03  2.059e+02   0.523  0.60149    
+duration_factorlong                                       -2.175e-01  7.090e-02  1.081e+02  -3.068  0.00272 ** 
+participant_originUK                                      -1.196e-02  1.029e-01  2.013e+02  -0.116  0.90763    
+mean_familiarity:duration_factorlong                       3.032e-03  1.696e-03  1.088e+02   1.787  0.07667 .  
+mean_familiarity:participant_originUK                     -1.632e-03  2.801e-03  2.041e+02  -0.583  0.56074    
+duration_factorlong:participant_originUK                   1.913e-01  1.014e-01  1.088e+02   1.887  0.06186 .  
+mean_familiarity:duration_factorlong:participant_originUK -3.598e-03  2.706e-03  1.119e+02  -1.329  0.18641    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) mn_fml drtn_f prt_UK mn_f:_ m_:_UK d_:_UK
+mean_fmlrty -0.925                                          
+drtn_fctrln -0.495  0.472                                   
+prtcpnt_rUK -0.660  0.610  0.326                            
+mn_fmlrty:_  0.478 -0.516 -0.942 -0.315                     
+mn_fmlr:_UK  0.533 -0.576 -0.272 -0.923  0.297              
+drtn_fc:_UK  0.346 -0.330 -0.699 -0.556  0.659  0.535       
+mn_fm:_:_UK -0.299  0.324  0.591  0.565 -0.627 -0.617 -0.931
