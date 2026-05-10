@@ -165,6 +165,7 @@ ggplot(home_familiarity, aes(x = face, y = mean_fam, colour = stimuli_condition)
     values = c("IL" = "#E41A1C", "UK" = "#377EB8"),
     labels = c("IL" = "IL faces (rated by IL)", "UK" = "UK faces (rated by UK)"),
     name = "Stimulus condition") +
+  scale_y_continuous(limits = c(0, 100)) +
   facet_wrap(~stimuli_condition, scales = "free_x",
              labeller = labeller(stimuli_condition = c("IL" = "IL faces", "UK" = "UK faces"))) +
   labs(title = "Familiarity per face (rated by home participants)",
