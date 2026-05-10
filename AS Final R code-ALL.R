@@ -433,41 +433,6 @@ model_il_rd_3way <- lmer(
 
 summary(model_il_rd_3way)
 
-# familiarity as categorical variable (low / medium / high)
-full_data_all$familiarity_cat <- cut(full_data_all$familiarity,
-                                     breaks = c(-Inf, 33, 66, Inf),
-                                     labels = c("low", "medium", "high"))
-
-model_il_rd_fam_cat <- lmer(
-  rd ~ familiarity_cat * duration_factor + appeal + stimuli_condition +
-    (1 | participant) + (1 | face), data = full_data_all)
-
-summary(model_il_rd_fam_cat)
-
-# Figure – familiarity category × duration
-ggplot(full_data_all, aes(x = familiarity_cat, y = rd, fill = duration_factor)) +
-  geom_boxplot(alpha = 0.6, outlier.size = 0.5) +
-  scale_fill_manual(
-    values = c("short" = "#377EB8", "long" = "#E41A1C"),
-    labels = c("short" = "800 ms", "long" = "1600 ms"),
-    name = "Duration") +
-  labs(title = "Reproduced duration by familiarity category and duration",
-       x = "Familiarity category",
-       y = "Reproduced duration (ms)") +
-  theme_bw() +
-  theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_familiarity_cat.png", width = 8, height = 6, dpi = 300)
-
-# Levene's test – is the variance in rd different across familiarity categories?
-library(car)
-
-# overall: across all familiarity categories
-leveneTest(rd ~ familiarity_cat, data = full_data_all)
-
-# separately per duration
-leveneTest(rd ~ familiarity_cat, data = full_data_all[full_data_all$duration_factor == "short", ])
-leveneTest(rd ~ familiarity_cat, data = full_data_all[full_data_all$duration_factor == "long", ])
-
 # precision model – cv_rd (coefficient of variation) as a function of familiarity, duration, and participant origin
 precision_data <- full_data_all %>%
   group_by(participant, participant_origin, duration_factor) %>%
@@ -491,15 +456,6 @@ cat("\n\n========== Interaction Model ==========\n")
 print(summary(model_il_rd))
 cat("\n\n========== Three-Way Interaction Model (familiarity × duration × stimuli_condition) ==========\n")
 print(summary(model_il_rd_3way))
-cat("\n\n========== Familiarity Categorical Model ==========\n")
-print(summary(model_il_rd_fam_cat))
-cat("\n\n========== Levene's Test – Variance in rd by familiarity category ==========\n")
-cat("\n-- All data --\n")
-print(leveneTest(rd ~ familiarity_cat, data = full_data_all))
-cat("\n-- Short (800ms) only --\n")
-print(leveneTest(rd ~ familiarity_cat, data = full_data_all[full_data_all$duration_factor == "short", ]))
-cat("\n-- Long (1600ms) only --\n")
-print(leveneTest(rd ~ familiarity_cat, data = full_data_all[full_data_all$duration_factor == "long", ]))
 cat("\n\n========== Precision Model (cv_rd ~ familiarity × duration × participant_origin) ==========\n")
 print(summary(model_precision))
 sink()
