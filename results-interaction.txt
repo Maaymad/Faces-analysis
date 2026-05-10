@@ -1,0 +1,36 @@
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: rd ~ familiarity * duration_factor + appeal + stimuli_condition +      (1 | participant) + (1 | face)
+   Data: full_data
+
+REML criterion at convergence: 43314.5
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.9129 -0.5530 -0.0285  0.4998  8.6961 
+
+Random effects:
+ Groups      Name        Variance Std.Dev.
+ face        (Intercept)      0     0.0   
+ participant (Intercept)  82386   287.0   
+ Residual                145733   381.7   
+Number of obs: 2931, groups:  face, 60; participant, 50
+
+Fixed effects:
+                                  Estimate Std. Error         df t value Pr(>|t|)    
+(Intercept)                      892.94446   48.14359   90.37248  18.548   <2e-16 ***
+familiarity                       -0.09071    0.30099 2898.05907  -0.301    0.763    
+duration_factorlong              583.44829   20.05032 2878.76591  29.099   <2e-16 ***
+appeal                            -0.07879    0.32134 2924.15611  -0.245    0.806    
+stimuli_conditionother           -26.18918   19.13949 2891.07357  -1.368    0.171    
+familiarity:duration_factorlong   -0.23572    0.35517 2878.48848  -0.664    0.507    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) fmlrty drtn_f appeal stml_c
+familiarity -0.324                            
+drtn_fctrln -0.201  0.405                     
+appeal      -0.235 -0.182  0.005              
+stml_cndtnt -0.405  0.460 -0.015  0.106       
+fmlrty:drt_  0.142 -0.575 -0.705 -0.016  0.016
+
