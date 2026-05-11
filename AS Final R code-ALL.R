@@ -427,13 +427,6 @@ model_il_rd <- lmer(
 
 summary(model_il_rd)
 
-# three-way interaction model: familiarity × duration × stimuli_condition
-model_il_rd_3way <- lmer(
-  rd ~ familiarity * duration_factor * stimuli_condition + appeal +
-    (1 | participant) + (1 | face), data = full_data_all)
-
-summary(model_il_rd_3way)
-
 # precision model – cv_rd (coefficient of variation) as a function of familiarity, duration, and participant origin
 precision_data <- full_data_all %>%
   group_by(participant, participant_origin, duration_factor) %>%
@@ -455,8 +448,6 @@ cat("========== Main Effects Model ==========\n")
 print(summary(model_il_rd_main))
 cat("\n\n========== Interaction Model ==========\n")
 print(summary(model_il_rd))
-cat("\n\n========== Three-Way Interaction Model (familiarity × duration × stimuli_condition) ==========\n")
-print(summary(model_il_rd_3way))
 cat("\n\n========== Precision Model (cv_rd ~ familiarity × duration × participant_origin) ==========\n")
 print(summary(model_precision))
 sink()
@@ -476,13 +467,6 @@ pred_plot <- pred_grid %>%
   group_by(familiarity, duration_factor) %>%
   summarise(pred_rd = mean(pred_rd), .groups = "drop")
 
-# grouping familiarity into bins
-obs_plot <- full_data_all %>% mutate(fam_bin = cut(familiarity,
-                                                   breaks = seq(0, 100, by = 10),include.lowest = TRUE)) %>%
-  group_by(duration_factor, fam_bin) %>%summarise(
-    fam_mid = mean(familiarity, na.rm = TRUE),
-    mean_rd = mean(rd, na.rm = TRUE),
-    se_rd = sd(rd, na.rm = TRUE) / sqrt(n()),.groups = "drop")
 
 # Figure 4 – Interaction between familiarity and duration
 ggplot() +geom_point(data = obs_plot,
@@ -503,116 +487,6 @@ ggplot() +geom_point(data = obs_plot,
   theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
 ggsave("images/figure_4.png", width = 8, height = 6, dpi = 300)
 
-# Figure 4.1 – Interaction between familiarity and duration (Neutral faces only)
-neutral_data <- full_data_all %>% filter(stimuli_condition == "Neutral")
-
-obs_plot_neutral <- neutral_data %>%
-  mutate(fam_bin = cut(familiarity, breaks = seq(0, 100, by = 10), include.lowest = TRUE)) %>%
-  group_by(duration_factor, fam_bin) %>%
-  summarise(
-    fam_mid = mean(familiarity, na.rm = TRUE),
-    mean_rd = mean(rd, na.rm = TRUE),
-    se_rd = sd(rd, na.rm = TRUE) / sqrt(n()), .groups = "drop")
-
-pred_grid_neutral <- expand.grid(
-  familiarity = seq(0, 100, length.out = 200),
-  duration_factor = c("short", "long"),
-  appeal = mean(neutral_data$appeal, na.rm = TRUE),
-  stimuli_condition = "Neutral")
-
-pred_grid_neutral$pred_rd <- predict(model_il_rd, newdata = pred_grid_neutral, re.form = NA)
-
-ggplot() +
-  geom_point(data = obs_plot_neutral,
-             aes(x = fam_mid, y = mean_rd, colour = duration_factor),
-             size = 2.8, alpha = 0.9) +
-  geom_errorbar(data = obs_plot_neutral,
-                aes(x = fam_mid, ymin = mean_rd - se_rd, ymax = mean_rd + se_rd, colour = duration_factor),
-                width = 1.5, alpha = 0.5) +
-  geom_line(data = pred_grid_neutral,
-            aes(x = familiarity, y = pred_rd, colour = duration_factor),
-            linewidth = 1.3) +
-  labs(title = "Interaction between familiarity and duration (Neutral faces)",
-       x = "Familiarity rating (0-100)",
-       y = "Reproduced duration (ms)",
-       colour = "True duration") +
-  scale_color_discrete(labels = c("800 ms", "1600 ms")) +
-  theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("images/figure_4_1.png", width = 8, height = 6, dpi = 300)
-
-# Figure 4.2 – Interaction between familiarity and duration (UK faces only)
-uk_data <- full_data_all %>% filter(stimuli_condition == "UK")
-
-obs_plot_uk <- uk_data %>%
-  mutate(fam_bin = cut(familiarity, breaks = seq(0, 100, by = 10), include.lowest = TRUE)) %>%
-  group_by(duration_factor, fam_bin) %>%
-  summarise(
-    fam_mid = mean(familiarity, na.rm = TRUE),
-    mean_rd = mean(rd, na.rm = TRUE),
-    se_rd = sd(rd, na.rm = TRUE) / sqrt(n()), .groups = "drop")
-
-pred_grid_uk <- expand.grid(
-  familiarity = seq(0, 100, length.out = 200),
-  duration_factor = c("short", "long"),
-  appeal = mean(uk_data$appeal, na.rm = TRUE),
-  stimuli_condition = "UK")
-
-pred_grid_uk$pred_rd <- predict(model_il_rd, newdata = pred_grid_uk, re.form = NA)
-
-ggplot() +
-  geom_point(data = obs_plot_uk,
-             aes(x = fam_mid, y = mean_rd, colour = duration_factor),
-             size = 2.8, alpha = 0.9) +
-  geom_errorbar(data = obs_plot_uk,
-                aes(x = fam_mid, ymin = mean_rd - se_rd, ymax = mean_rd + se_rd, colour = duration_factor),
-                width = 1.5, alpha = 0.5) +
-  geom_line(data = pred_grid_uk,
-            aes(x = familiarity, y = pred_rd, colour = duration_factor),
-            linewidth = 1.3) +
-  labs(title = "Interaction between familiarity and duration (UK faces)",
-       x = "Familiarity rating (0-100)",
-       y = "Reproduced duration (ms)",
-       colour = "True duration") +
-  scale_color_discrete(labels = c("800 ms", "1600 ms")) +
-  theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("images/figure_4_2.png", width = 8, height = 6, dpi = 300)
-
-# Figure 4.3 – Interaction between familiarity and duration (IL faces only)
-il_data <- full_data_all %>% filter(stimuli_condition == "IL")
-
-obs_plot_il <- il_data %>%
-  mutate(fam_bin = cut(familiarity, breaks = seq(0, 100, by = 10), include.lowest = TRUE)) %>%
-  group_by(duration_factor, fam_bin) %>%
-  summarise(
-    fam_mid = mean(familiarity, na.rm = TRUE),
-    mean_rd = mean(rd, na.rm = TRUE),
-    se_rd = sd(rd, na.rm = TRUE) / sqrt(n()), .groups = "drop")
-
-pred_grid_il <- expand.grid(
-  familiarity = seq(0, 100, length.out = 200),
-  duration_factor = c("short", "long"),
-  appeal = mean(il_data$appeal, na.rm = TRUE),
-  stimuli_condition = "IL")
-
-pred_grid_il$pred_rd <- predict(model_il_rd, newdata = pred_grid_il, re.form = NA)
-
-ggplot() +
-  geom_point(data = obs_plot_il,
-             aes(x = fam_mid, y = mean_rd, colour = duration_factor),
-             size = 2.8, alpha = 0.9) +
-  geom_errorbar(data = obs_plot_il,
-                aes(x = fam_mid, ymin = mean_rd - se_rd, ymax = mean_rd + se_rd, colour = duration_factor),
-                width = 1.5, alpha = 0.5) +
-  geom_line(data = pred_grid_il,
-            aes(x = familiarity, y = pred_rd, colour = duration_factor),
-            linewidth = 1.3) +
-  labs(title = "Interaction between familiarity and duration (IL faces)",
-       x = "Familiarity rating (0-100)",
-       y = "Reproduced duration (ms)",
-       colour = "True duration") +
-  scale_color_discrete(labels = c("800 ms", "1600 ms")) +
-  theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("images/figure_4_3.png", width = 8, height = 6, dpi = 300)
 
 # Spaghetti plot – participant means for 800 vs 1600 ms
 # calculate participant means per duration
