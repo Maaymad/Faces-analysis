@@ -4,20 +4,21 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
 # load data
 rd_il <- bind_rows(
-  read.csv("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/il_data_10-5/rd_il.csv"),
-  read.csv("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/il_data_10-5/rd_il_cash.csv")
+  read.csv("il_data_10-5/rd_il.csv"),
+  read.csv("il_data_10-5/rd_il_cash.csv")
 )
 
 ratings_il <- bind_rows(
-  read.csv("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/il_data_10-5/ratings_il.csv"),
-  read.csv("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/il_data_10-5/ratings_il_cash.csv")
+  read.csv("il_data_10-5/ratings_il.csv"),
+  read.csv("il_data_10-5/ratings_il_cash.csv")
 )
 
-
-rd_uk = read.csv('/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/UK2_rd.csv')
-ratings_uk = read.csv('/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/UK2_ratings.csv')
+rd_uk = read.csv('UK2_rd.csv')
+ratings_uk = read.csv('UK2_ratings.csv')
 ratings_il$Participant.Public.ID <- as.character(ratings_il$Participant.Public.ID)
 rd_il$Participant.Public.ID <- as.character(rd_il$Participant.Public.ID)
 
@@ -143,7 +144,7 @@ ggplot(full_data_all, aes(x = stimuli_condition, y = familiarity, fill = partici
        y = "Familiarity rating (0-100)") +
   theme_bw() +
   theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_1.png", width = 8, height = 6, dpi = 300)
 
 # Figure 1b – Familiarity per face: IL faces rated by IL participants, UK faces rated by UK participants
 home_familiarity <- full_data_all %>%
@@ -174,7 +175,7 @@ ggplot(home_familiarity, aes(x = face, y = mean_fam, colour = stimuli_condition)
   theme_bw() +
   theme(plot.title  = element_text(size = 12, hjust = 0.5),
         axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1b.png", width = 10, height = 6, dpi = 300)
+ggsave("images/figure_1b.png", width = 10, height = 6, dpi = 300)
 
 # Figure 1c – Familiarity per face: IL faces rated by UK participants, UK faces rated by IL participants
 away_familiarity <- full_data_all %>%
@@ -204,7 +205,7 @@ ggplot(away_familiarity, aes(x = face, y = mean_fam, colour = stimuli_condition)
   theme_bw() +
   theme(plot.title  = element_text(size = 12, hjust = 0.5),
         axis.text.x = element_text(angle = 90, hjust = 1, size = 6))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1c.png", width = 10, height = 6, dpi = 300)
+ggsave("images/figure_1c.png", width = 10, height = 6, dpi = 300)
 
 # helper function for participant familiarity plots
 plot_participant_fam <- function(data, face_cond, part_orig, title) {
@@ -242,7 +243,7 @@ p3 <- plot_participant_fam(full_data_all, "UK", "IL", "IL participants rating UK
 p4 <- plot_participant_fam(full_data_all, "IL", "UK", "UK participants rating IL faces")
 
 fig_1d <- grid.arrange(p1, p2, p3, p4, ncol = 2)
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1d.png", plot = fig_1d, width = 14, height = 10, dpi = 300)
+ggsave("images/figure_1d.png", plot = fig_1d, width = 14, height = 10, dpi = 300)
 
 # Figure 1e – Mean familiarity per participant across all three face conditions
 participant_fam_all <- full_data_all %>%
@@ -272,7 +273,7 @@ ggplot(participant_fam_all, aes(x = stimuli_condition, y = mean_fam,
   theme_bw() +
   theme(plot.title    = element_text(size = 12, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1e.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_1e.png", width = 8, height = 6, dpi = 300)
 
 # Figure 1f – Mean familiarity per participant: IL vs UK faces only
 participant_fam_no_neutral <- full_data_all %>%
@@ -302,7 +303,7 @@ ggplot(participant_fam_no_neutral, aes(x = stimuli_condition, y = mean_fam,
   theme_bw() +
   theme(plot.title    = element_text(size = 12, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1f.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_1f.png", width = 8, height = 6, dpi = 300)
 
 # Figure 1fa – Mean appeal per participant: IL vs UK faces only
 participant_ap_no_neutral <- full_data_all %>%
@@ -332,7 +333,7 @@ ggplot(participant_ap_no_neutral, aes(x = stimuli_condition, y = mean_ap,
   theme_bw() +
   theme(plot.title    = element_text(size = 12, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1fa.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_1fa.png", width = 8, height = 6, dpi = 300)
 
 # Figure 1g – Home minus away familiarity per participant
 participant_fam_diff <- full_data_all %>%
@@ -364,7 +365,7 @@ ggplot(participant_fam_diff, aes(x = participant, y = diff, colour = participant
   theme(plot.title    = element_text(size = 12, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"),
         axis.text.x   = element_text(angle = 90, hjust = 1, size = 6))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_1g.png", width = 10, height = 6, dpi = 300)
+ggsave("images/figure_1g.png", width = 10, height = 6, dpi = 300)
 
 # Figure 2 – Familiarity vs reproduced duration by duration
 ggplot(full_data_all, aes(x = familiarity, y = rd, colour = stimuli_condition)) +
@@ -381,7 +382,7 @@ ggplot(full_data_all, aes(x = familiarity, y = rd, colour = stimuli_condition)) 
         x = "Familiarity rating (0-100)",
         y = "Reproduced duration (ms)") +
   theme_bw()
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_2.png", width = 10, height = 6, dpi = 300)
+ggsave("images/figure_2.png", width = 10, height = 6, dpi = 300)
 
 # Figure 2b – Familiarity vs reproduced duration: short vs long (all stimuli combined)
 ggplot(full_data_all, aes(x = familiarity, y = rd)) +
@@ -395,7 +396,7 @@ ggplot(full_data_all, aes(x = familiarity, y = rd)) +
        y = "Reproduced duration (ms)") +
   theme_bw() +
   theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_2b.png", width = 10, height = 6, dpi = 300)
+ggsave("images/figure_2b.png", width = 10, height = 6, dpi = 300)
 
 # Figure 3 – Familiarity vs reproduced duration by duration and stimulus condition
 ggplot(full_data_all, aes(x = familiarity, y = rd)) +
@@ -409,7 +410,7 @@ ggplot(full_data_all, aes(x = familiarity, y = rd)) +
        x = "Familiarity rating (0-100)",
        y = "Reproduced duration (ms)") +
   theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_3.png", width = 10, height = 8, dpi = 300)
+ggsave("images/figure_3.png", width = 10, height = 8, dpi = 300)
 
 #full_data_all$face <- as.factor(full_data_all$face) 
 # main effects model
@@ -449,7 +450,7 @@ model_precision <- lmer(
 summary(model_precision)
 
 # save model summaries to TXT
-sink("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/results-all.txt")
+sink("results-all.txt")
 cat("========== Main Effects Model ==========\n")
 print(summary(model_il_rd_main))
 cat("\n\n========== Interaction Model ==========\n")
@@ -500,7 +501,7 @@ ggplot() +geom_point(data = obs_plot,
        colour = "True duration") +
   scale_color_discrete(labels = c("800 ms", "1600 ms")) +
   theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_4.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_4.png", width = 8, height = 6, dpi = 300)
 
 # Figure 4.1 – Interaction between familiarity and duration (Neutral faces only)
 neutral_data <- full_data_all %>% filter(stimuli_condition == "Neutral")
@@ -537,7 +538,7 @@ ggplot() +
        colour = "True duration") +
   scale_color_discrete(labels = c("800 ms", "1600 ms")) +
   theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_4_1.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_4_1.png", width = 8, height = 6, dpi = 300)
 
 # Figure 4.2 – Interaction between familiarity and duration (UK faces only)
 uk_data <- full_data_all %>% filter(stimuli_condition == "UK")
@@ -574,7 +575,7 @@ ggplot() +
        colour = "True duration") +
   scale_color_discrete(labels = c("800 ms", "1600 ms")) +
   theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_4_2.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_4_2.png", width = 8, height = 6, dpi = 300)
 
 # Figure 4.3 – Interaction between familiarity and duration (IL faces only)
 il_data <- full_data_all %>% filter(stimuli_condition == "IL")
@@ -611,7 +612,7 @@ ggplot() +
        colour = "True duration") +
   scale_color_discrete(labels = c("800 ms", "1600 ms")) +
   theme_bw() + theme(plot.title = element_text(size = 12, hjust = 0.5))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_4_3.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_4_3.png", width = 8, height = 6, dpi = 300)
 
 # Spaghetti plot – participant means for 800 vs 1600 ms
 # calculate participant means per duration
@@ -688,4 +689,4 @@ ggplot(participant_means, aes(x = duration_factor, y = mean_rd)) +
   theme_bw() +
   theme(plot.title    = element_text(size = 14, hjust = 0.5),
         plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
-ggsave("/Users/maaymadar/Documents/Huji24-25/LandauLab/Faces_analysis/images/figure_spaghetti.png", width = 8, height = 6, dpi = 300)
+ggsave("images/figure_spaghetti.png", width = 8, height = 6, dpi = 300)
