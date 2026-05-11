@@ -442,6 +442,205 @@ model_precision <- lmer(
 
 summary(model_precision)
 
+# Figure – CV by mean familiarity, duration, and participant origin (mirrors model_precision)
+pred_cv <- expand.grid(
+  mean_familiarity  = seq(0, 100, length.out = 200),
+  duration_factor   = c("short", "long"),
+  participant_origin = c("IL", "UK"))
+pred_cv$pred_cv <- predict(model_precision, newdata = pred_cv, re.form = NA)
+
+ggplot() +
+  geom_point(data = precision_data,
+             aes(x = mean_familiarity, y = cv_rd, colour = participant_origin),
+             alpha = 0.4, size = 1.5) +
+  geom_line(data = pred_cv,
+            aes(x = mean_familiarity, y = pred_cv,
+                colour = participant_origin, linetype = duration_factor),
+            linewidth = 1.2) +
+  scale_colour_manual(
+    values = c("IL" = "#E41A1C", "UK" = "#377EB8"),
+    labels = c("IL" = "Israeli participants", "UK" = "UK participants"),
+    name = "Participant origin") +
+  scale_linetype_manual(
+    values = c("short" = "dashed", "long" = "solid"),
+    labels = c("short" = "800 ms", "long" = "1600 ms"),
+    name = "True duration") +
+  labs(title = "Temporal precision (CV) by familiarity, duration, and participant origin",
+       subtitle = "Points = participant CV | Lines = model predictions",
+       x = "Mean familiarity rating (0-100)",
+       y = "Coefficient of variation (CV = SD/mean)") +
+  theme_bw() +
+  theme(plot.title    = element_text(size = 12, hjust = 0.5),
+        plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
+ggsave("images/figure_cv_model.png", width = 10, height = 6, dpi = 300)
+
+
+# Figure – Precision: within-participant residual SD by familiarity bin
+# For each trial, compute the residual relative to that participant's mean rd
+# within each duration condition (removing individual bias).
+# Then bin familiarity and plot the SD of residuals per bin.
+
+full_data_all <- full_data_all %>%
+  group_by(participant, duration_factor) %>%
+  mutate(rd_resid = rd - mean(rd, na.rm = TRUE)) %>%
+  ungroup()
+
+precision_binned <- full_data_all %>%
+  mutate(fam_bin = cut(familiarity,
+                       breaks = seq(0, 100, by = 20),
+                       include.lowest = TRUE,
+                       labels = c("0-20", "21-40", "41-60", "61-80", "81-100"))) %>%
+  group_by(duration_factor, fam_bin) %>%
+  summarise(
+    sd_resid = sd(rd_resid, na.rm = TRUE),
+    n        = n(),
+    se       = sd_resid / sqrt(n),
+    .groups  = "drop")
+
+ggplot(precision_binned, aes(x = fam_bin, y = sd_resid,
+                              colour = duration_factor, group = duration_factor)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = sd_resid - se, ymax = sd_resid + se),
+                width = 0.2, alpha = 0.6) +
+  geom_line(linewidth = 1.1) +
+  scale_colour_manual(
+    values = c("short" = "#F97316", "long" = "#0D9488"),
+    labels = c("short" = "800 ms", "long" = "1600 ms"),
+    name = "True duration") +
+  scale_y_continuous(limits = c(250, 500)) +
+  labs(title = "Within-participant variability by familiarity level",
+       subtitle = "SD of residuals (rd minus participant mean), controlling for individual bias",
+       x = "Familiarity bin (0-100)",
+       y = "SD of residuals (ms)") +
+  theme_bw() +
+  theme(plot.title    = element_text(size = 12, hjust = 0.5),
+        plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
+ggsave("images/figure_precision_cv.png", width = 9, height = 6, dpi = 300)
+
+# Figure – same but with CV (SD/mean) instead of raw SD of residuals
+# CV normalises by each participant's own mean, making short and long durations comparable
+cv_binned <- full_data_all %>%
+  group_by(participant, duration_factor) %>%
+  mutate(participant_mean = mean(rd, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(fam_bin = cut(familiarity,
+                       breaks = seq(0, 100, by = 20),
+                       include.lowest = TRUE,
+                       labels = c("0-20", "21-40", "41-60", "61-80", "81-100"))) %>%
+  group_by(duration_factor, fam_bin) %>%
+  summarise(
+    cv_resid = sd(rd_resid, na.rm = TRUE) / mean(participant_mean, na.rm = TRUE),
+    n        = n(),
+    se       = sd(rd_resid, na.rm = TRUE) / mean(participant_mean, na.rm = TRUE) / sqrt(n),
+    .groups  = "drop")
+
+ggplot(cv_binned, aes(x = fam_bin, y = cv_resid,
+                      colour = duration_factor, group = duration_factor)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = cv_resid - se, ymax = cv_resid + se),
+                width = 0.2, alpha = 0.6) +
+  geom_line(linewidth = 1.1) +
+  scale_colour_manual(
+    values = c("short" = "#F97316", "long" = "#0D9488"),
+    labels = c("short" = "800 ms", "long" = "1600 ms"),
+    name = "True duration") +
+  labs(title = "Within-participant CV by familiarity level",
+       subtitle = "CV = SD of residuals / participant mean (normalised for duration)",
+       x = "Familiarity bin (0-100)",
+       y = "CV of residuals") +
+  theme_bw() +
+  theme(plot.title    = element_text(size = 12, hjust = 0.5),
+        plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
+ggsave("images/figure_precision_cv2.png", width = 9, height = 6, dpi = 300)
+
+# Statistical model: does familiarity predict within-participant variability?
+# DV: absolute residual per trial (|rd - participant mean|), capturing trial-level deviation
+# IV: familiarity (continuous), duration_factor, their interaction
+# Random intercept per participant (removes individual bias in overall variability)
+full_data_all$abs_resid <- abs(full_data_all$rd_resid)
+
+model_precision_resid <- lmer(
+  abs_resid ~ familiarity * duration_factor + (1 | participant),
+  data = full_data_all)
+
+summary(model_precision_resid)
+
+# Statistical model: CV of residuals (normalised by participant mean) ~ familiarity
+# mirrors figure_precision_cv2: does familiarity reduce within-participant CV?
+full_data_all <- full_data_all %>%
+  group_by(participant, duration_factor) %>%
+  mutate(participant_mean = mean(rd, na.rm = TRUE),
+         cv_resid_trial   = abs(rd_resid) / participant_mean) %>%
+  ungroup()
+
+model_cv_resid <- lmer(
+  cv_resid_trial ~ familiarity * duration_factor + (1 | participant),
+  data = full_data_all)
+
+summary(model_cv_resid)
+
+# Statistical model: within-participant variability – HIGH vs LOW familiarity only
+# Exclude medium familiarity (34–66) to compare extremes
+full_data_hilo <- full_data_all %>%
+  filter(familiarity <= 33 | familiarity >= 67) %>%
+  mutate(fam_group = factor(
+    ifelse(familiarity <= 33, "low", "high"),
+    levels = c("low", "high")))
+
+model_precision_hilo <- lmer(
+  abs_resid ~ fam_group * duration_factor + (1 | participant),
+  data = full_data_hilo)
+
+summary(model_precision_hilo)
+
+# Levene test: does the variance of residuals differ between high and low familiarity?
+library(car)
+leveneTest(rd_resid ~ fam_group, data = full_data_hilo)
+
+# Statistical model: does familiarity affect accuracy relative to the true duration?
+# DV: absolute error per trial (|rd - true duration|) — deviation from the correct answer
+# IV: familiarity × duration_factor
+# Random intercept per participant
+full_data_all$abs_error <- abs(full_data_all$rd - full_data_all$duration)
+
+model_accuracy <- lmer(
+  abs_error ~ familiarity * duration_factor + (1 | participant),
+  data = full_data_all)
+
+summary(model_accuracy)
+
+# Figure – Accuracy (|rd - true duration|) by familiarity bin and duration
+accuracy_binned <- full_data_all %>%
+  mutate(fam_bin = cut(familiarity,
+                       breaks = seq(0, 100, by = 20),
+                       include.lowest = TRUE,
+                       labels = c("0-20", "21-40", "41-60", "61-80", "81-100"))) %>%
+  group_by(duration_factor, fam_bin) %>%
+  summarise(
+    mean_abs_error = mean(abs_error, na.rm = TRUE),
+    se             = sd(abs_error, na.rm = TRUE) / sqrt(n()),
+    .groups        = "drop")
+
+ggplot(accuracy_binned, aes(x = fam_bin, y = mean_abs_error,
+                             colour = duration_factor, group = duration_factor)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = mean_abs_error - se, ymax = mean_abs_error + se),
+                width = 0.2, alpha = 0.6) +
+  geom_line(linewidth = 1.1) +
+  scale_colour_manual(
+    values = c("short" = "#F97316", "long" = "#0D9488"),
+    labels = c("short" = "800 ms", "long" = "1600 ms"),
+    name = "True duration") +
+  scale_y_continuous(limits = c(250, 500)) +
+  labs(title = "Accuracy by familiarity level and duration",
+       subtitle = "Mean absolute error (|reproduced - true duration|)",
+       x = "Familiarity bin (0-100)",
+       y = "Mean absolute error (ms)") +
+  theme_bw() +
+  theme(plot.title    = element_text(size = 12, hjust = 0.5),
+        plot.subtitle = element_text(size = 10, hjust = 0.5, colour = "grey40"))
+ggsave("images/figure_accuracy.png", width = 9, height = 6, dpi = 300)
+
 # save model summaries to TXT
 sink("results-all.txt")
 cat("========== Main Effects Model ==========\n")
@@ -450,6 +649,16 @@ cat("\n\n========== Interaction Model ==========\n")
 print(summary(model_il_rd))
 cat("\n\n========== Precision Model (cv_rd ~ familiarity × duration × participant_origin) ==========\n")
 print(summary(model_precision))
+cat("\n\n========== Within-Participant Variability Model (|residual| ~ familiarity × duration) ==========\n")
+print(summary(model_precision_resid))
+cat("\n\n========== CV of Residuals Model (|residual|/participant_mean ~ familiarity × duration) ==========\n")
+print(summary(model_cv_resid))
+cat("\n\n========== Accuracy Model (|rd - true duration| ~ familiarity × duration) ==========\n")
+print(summary(model_accuracy))
+cat("\n\n========== Within-Participant Variability: High vs Low Familiarity Only (medium excluded) ==========\n")
+print(summary(model_precision_hilo))
+cat("\n\n========== Levene Test: Variance of residuals – High vs Low familiarity ==========\n")
+print(leveneTest(rd_resid ~ fam_group, data = full_data_hilo))
 sink()
 
 full_data_all$duration_factor <- factor(full_data_all$duration_factor, levels = c("short", "long"))
