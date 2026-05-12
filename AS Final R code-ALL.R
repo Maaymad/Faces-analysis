@@ -422,7 +422,7 @@ summary(model_il_rd_main)
 
 # interaction model
 model_il_rd <- lmer(
-  rd ~ familiarity * duration_factor + appeal + stimuli_condition +
+  rd ~ familiarity * duration_factor * stimuli_condition * participant_origin + appeal + 
     (1 | participant) + (1 | face),data = full_data_all)
 
 summary(model_il_rd)
